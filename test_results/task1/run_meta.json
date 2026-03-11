@@ -1,4 +1,12 @@
 {
+  "model_name": "MultiSpectralMultiTaskModel",
+  "dataset": "synthetic_multispectral_smoke",
+  "num_samples": {
+    "val": 2
+  },
+  "seed": 42,
+  "timestamp_utc": "2026-03-11T20:50:11Z",
+  "commit_hash": "963daf1",
   "channels": [
     "rgb",
     "ir",
@@ -10,6 +18,9 @@
     "properties",
     "reconstruction"
   ],
-  "manifest_path": "/private/tmp/artextract_parallel/task1_run/resolved_manifest.csv",
-  "checkpoint_path": "/private/tmp/artextract_parallel/task1_run/best_model.pt"
+  "artifact_paths": {
+    "metrics": "test_results/task1/metrics.json",
+    "confusion_matrix": "test_results/task1/confusion_matrix.png",
+    "roc_curve": "test_results/task1/roc_curve.png"
+  }
 }

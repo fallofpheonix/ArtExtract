@@ -1,0 +1,12 @@
+Expected Task2 output structure (successful run):
+
+analysis_out/
+  embedding_metadata.csv
+  cluster_counts.csv
+  cluster_representatives.csv
+  cluster_label_composition.csv
+  pca_clusters.png
+
+Notes:
+- Additional retrieval demo files may be emitted depending on run flags.
+- Exact file set varies with clustering and plotting options.

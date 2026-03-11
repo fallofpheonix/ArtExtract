@@ -89,6 +89,15 @@ python scripts/run_similarity.py --images-dir images --opendata-dir nga_data
 ```
 (Requires optional similarity dependencies in `requirements_similarity.txt`.)
 
+## HumanAI Evaluation Artifacts
+1. Task1 evidence: `https://github.com/fallofpheonix/ArtExtract/tree/main/test_results/task1`
+2. Task2 evidence: `https://github.com/fallofpheonix/ArtExtract/tree/main/test_results/task2`
+
+Task2 validation note:
+1. Pipeline is validated through dependency/CLI/runtime startup stages.
+2. Current runtime log shows failure at remote model fetch stage due Hugging Face network timeout.
+3. This is an external fetch issue, not a local preprocessing/schema/CLI failure.
+
 ## Standard Report Artifacts
 Each unified run writes:
 1. `reports/<run_id>/metrics.json`
