@@ -1,3 +1,12 @@
-from .crnn import CRNNMultiTask
+try:
+    from .crnn import CRNNMultiTask
+except Exception:  # pragma: no cover
+    CRNNMultiTask = None  # type: ignore
 
-__all__ = ["CRNNMultiTask"]
+try:
+    from .multispectral import MultiSpectralMultiTaskModel, TaskFlags
+except Exception:  # pragma: no cover
+    MultiSpectralMultiTaskModel = None  # type: ignore
+    TaskFlags = None  # type: ignore
+
+__all__ = ["CRNNMultiTask", "MultiSpectralMultiTaskModel", "TaskFlags"]

@@ -1,50 +1,45 @@
 # Architecture
 
+## Unified Multispectral Stack
+
+Input contract per sample:
+1. `x`: tensor `[C,H,W]` where `C=len(channels)`
+2. `channel_mask`: tensor `[C]` (1=present, 0=missing)
+3. `targets` by enabled tasks:
+   - properties: `pigments`, `damage`, `restoration`
+   - hidden: `hidden_image`
+   - reconstruction: `hidden_gt`
+
 ## Model
-`src/artextract/models/crnn.py` defines `CRNNMultiTask`.
+`src/artextract/models/multispectral.py`
 
-Input:
-1. Tensor shape `[B, 3, H, W]`.
+1. Shared encoder consumes masked input `x * channel_mask`.
+2. Pooled embedding concatenates channel mask for modality-awareness.
+3. Optional heads:
+   - property head: pigments + damage + restoration logits
+   - hidden head: binary hidden-image logit
+   - reconstruction head: U-Net decoder (`src/artextract/reconstruction/unet.py`)
 
-Output dictionary:
-1. `style` logits `[B, N_style]`
-2. `artist` logits `[B, N_artist]`
-3. `genre` logits `[B, N_genre]`
-4. `embedding` fused feature `[B, fusion_dim]`
+## Loss
+Total loss:
+`L = λ_property * L_property + λ_hidden * L_hidden + λ_reconstruction * L_reconstruction`
 
-## Data Flow
-1. Global branch:
-   - `ResNet18` backbone with `fc=Identity`.
-   - Produces global feature vector (default 512-d).
-2. Patch branch:
-   - Uniform `patch_grid x patch_grid` split from input image.
-   - Shared lightweight CNN encoder per patch.
-   - Linear projection to `patch_dim`.
-   - BiGRU over patch sequence.
-3. Fusion:
-   - Concatenate global feature and GRU feature.
-   - Dropout.
-   - Three linear heads for style/artist/genre.
+Where:
+1. `L_property`: average of BCE losses for pigments/damage/restoration
+2. `L_hidden`: BCEWithLogits
+3. `L_reconstruction`: `L1 + MSE`
 
-## Default Config Parameters
-From `configs/baseline.json` / `configs/quick_cpu.json`:
-1. `patch_grid`
-2. `global_dim`
-3. `patch_dim`
-4. `rnn_hidden`
-5. `dropout`
+Weights are configured in `configs/multispectral_baseline.json`.
 
-## Training Objective
-`L_total = L_style + L_artist + L_genre`
+## Evaluation Artifacts
+`src/artextract/evaluation/multispectral.py` writes:
+1. `metrics.json`
+2. `run_meta.json`
+3. `confusion_matrix.png` (hidden task)
+4. `roc_curve.png` (hidden task)
+5. `recon_examples/*` (reconstruction task)
 
-Each task loss:
-1. CrossEntropyLoss.
-
-## Complexity (per batch)
-1. Patch extraction path: `O(B * P * C_patch)` where `P = patch_grid^2` and `C_patch` is patch encoder cost.
-2. GRU path: `O(B * P * H * (E + H))`, with `E=patch_dim`, `H=rnn_hidden`.
-3. Memory grows linearly with batch size and number of patches.
-
-## Current Engineering Constraints
-1. `global_dim` must match backbone output dimension (ResNet18 default 512) for head shape consistency.
-2. Patch processing is vectorized (no Python loop over patches), but still scales linearly with patch count.
+## Legacy Tracks
+1. CRNN RGB classification (`train_crnn.py`) remains unchanged.
+2. Hidden retrieval baseline (`train_hidden_retrieval.py`) remains unchanged.
+3. Similarity CLIP/FAISS moved under `src/artextract/similarity` and executed via `scripts/run_similarity.py`.

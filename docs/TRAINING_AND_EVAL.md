@@ -1,76 +1,53 @@
 # Training and Evaluation
 
-## 1. Build Multitask Manifests
+## Unified Multispectral Flow
+
+1. Prepare manifest (CSV/JSONL) with fields:
+   - `sample_id`, `split`, `channels`, `width`, `height`
+   - channel path columns (`rgb_path`, `ir_path`, `uv_path`, `xray_path`, ...)
+   - labels: `pigments`, `damage`, `restoration`, `hidden_image`
+   - optional `hidden_gt_path`
+2. Train with `scripts/train.py`.
+3. Evaluate with `scripts/eval.py`.
+
+## Train Example
 ```bash
-python scripts/build_manifest.py --split train --out data/manifests/train_multitask.csv
-python scripts/build_manifest.py --split val --out data/manifests/val_multitask.csv
+python scripts/train.py \
+  --manifest data/manifests/multispectral.csv \
+  --channels rgb,ir,uv,xray \
+  --tasks properties,hidden,reconstruction \
+  --config configs/multispectral_baseline.json \
+  --out-dir reports/run_ms
 ```
 
-Behavior:
-1. Reads `style_{split}.csv`, `artist_{split}.csv`, `genre_{split}.csv`.
-2. Joins on `image_relpath`.
-3. Drops rows missing artist or genre match.
-
-## 2. Train
+## Eval Example
 ```bash
-python scripts/train_crnn.py \
-  --config configs/quick_cpu.json \
-  --epochs 3 \
-  --batch-size 16 \
-  --out-dir outputs/quick_cpu
+python scripts/eval.py \
+  --manifest reports/run_ms/resolved_manifest.csv \
+  --checkpoint reports/run_ms/best_model.pt \
+  --pigments-vocab reports/run_ms/pigments_vocab.json \
+  --channels rgb,ir,uv,xray \
+  --tasks properties,hidden,reconstruction \
+  --config configs/multispectral_baseline.json \
+  --out-dir reports/run_ms
 ```
 
-Train outputs:
-1. `best_model.pt` (best style val top-1)
-2. `last_model.pt`
-3. `training_history.json`
-
-## 3. Evaluate Checkpoint
+## No Real Multispectral Data
+Use synthetic harness:
 ```bash
-python scripts/evaluate_model.py \
-  --config configs/quick_cpu.json \
-  --checkpoint outputs/quick_cpu/best_model.pt \
-  --out outputs/quick_cpu/val_metrics.json \
-  --predictions-out outputs/quick_cpu/val_predictions.csv \
-  --embeddings-out outputs/quick_cpu/val_embeddings.npy \
-  --style-labels-out outputs/quick_cpu/val_style_labels.npy
+python scripts/generate_synthetic_multispectral.py --images-root /path/to/rgb/images
 ```
+or directly via `scripts/train.py --synthetic-images-root ...`.
 
-Metrics written:
-1. Style: top-1, macro/weighted F1, balanced accuracy.
-2. Artist: top-1, top-5, macro/weighted F1, balanced accuracy.
-3. Genre: top-1, macro/weighted F1, balanced accuracy.
+## Determinism
+Deterministic controls are enabled in training:
+1. python/numpy/torch seed set from config
+2. `torch.backends.cudnn.deterministic=True`
+3. `torch.backends.cudnn.benchmark=False`
 
-## 4. Detect Outliers
-```bash
-python scripts/detect_outliers.py \
-  --embeddings outputs/quick_cpu/val_embeddings.npy \
-  --labels outputs/quick_cpu/val_style_labels.npy \
-  --out outputs/quick_cpu/style_outliers.csv \
-  --contamination 0.1 \
-  --min-samples-per-class 5
-```
+## Metrics
+1. Properties: pigments macro-F1, damage/restoration accuracy/precision/recall/F1
+2. Hidden detection: accuracy, precision, recall, F1, AUC
+3. Reconstruction: PSNR, SSIM
 
-## 5. Report Inputs
-Recommended minimum files for reporting:
-1. `training_history.json`
-2. `val_metrics.json`
-3. `val_predictions.csv`
-4. `style_outliers.csv`
-
-## 6. Optional Hidden-Image Retrieval
-Baseline pipeline:
-1. Synthetic overpaint data generation from WikiArt images.
-2. U-Net reconstruction model.
-3. Metrics: MAE, MSE, PSNR.
-
-Entrypoints:
-1. `scripts/run_hidden_retrieval_pipeline.sh`
-2. `scripts/train_hidden_retrieval.py`
-3. `scripts/evaluate_hidden_retrieval.py`
-
-## Known Limits of Current Pipeline
-1. Loss is unweighted sum of three cross-entropy heads.
-2. Default setup uses lightweight augmentation; no advanced policy search (RandAugment/CutMix/MixUp) is enabled.
-3. Manifest intersection currently reduces class coverage versus full raw CSV cardinality.
-4. `build_manifest.py` keeps only intersection across style/artist/genre splits (`train: 11276`, `val: 4707` with current metadata).
+Absent-task metrics are omitted from `metrics.json`.

@@ -167,6 +167,14 @@ filt("data/manifests/train_quick.csv", "data/manifests/train_quick_existing.csv"
 filt("data/manifests/val_quick.csv", "data/manifests/val_quick_existing.csv")
 PY
 
+train_rows=$(($(wc -l < data/manifests/train_quick_existing.csv) - 1))
+val_rows=$(($(wc -l < data/manifests/val_quick_existing.csv) - 1))
+if [[ "${train_rows}" -le 0 || "${val_rows}" -le 0 ]]; then
+  echo "error: empty filtered manifest (train=${train_rows}, val=${val_rows})."
+  echo "hint: set IMAGES_ROOT to a valid image tree or disable SKIP_DOWNLOAD."
+  exit 1
+fi
+
 echo "[7/9] build runtime config"
 "${VENV_DIR}/bin/python" - <<PY
 import json
