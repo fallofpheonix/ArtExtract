@@ -1,0 +1,25 @@
+{
+  "samples_val": 2,
+  "properties": {
+    "pigments_macro_f1": 0.3333333432674408,
+    "damage_accuracy": 0.0,
+    "damage_precision": 0.0,
+    "damage_recall": 0.0,
+    "damage_f1": 0.0,
+    "restoration_accuracy": 0.0,
+    "restoration_precision": 0.0,
+    "restoration_recall": 0.0,
+    "restoration_f1": 0.0
+  },
+  "hidden": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": 0.0
+  },
+  "reconstruction": {
+    "psnr": 10.341529619600703,
+    "ssim": 0.014008072578280581
+  }
+}

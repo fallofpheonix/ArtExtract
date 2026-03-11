@@ -1,0 +1,38 @@
+usage: run_similarity.py [-h] [--images-dir IMAGES_DIR]
+                         [--opendata-dir OPENDATA_DIR]
+                         [--batch-size BATCH_SIZE] [--max-images MAX_IMAGES]
+                         [--top-k TOP_K]
+                         [--label-col {classification,style,artist}]
+                         [--query-index QUERY_INDEX] [--clusters CLUSTERS]
+                         [--tsne-sample TSNE_SAMPLE] [--out-dir OUT_DIR]
+                         [--clip-backend {auto,openai,open_clip}]
+                         [--clip-model CLIP_MODEL]
+                         [--open-clip-pretrained OPEN_CLIP_PRETRAINED]
+
+CLIP + FAISS painting retrieval pipeline
+
+options:
+  -h, --help            show this help message and exit
+  --images-dir IMAGES_DIR
+                        Directory with downloaded images
+  --opendata-dir OPENDATA_DIR
+                        Path to NGA opendata clone
+  --batch-size BATCH_SIZE
+  --max-images MAX_IMAGES
+                        Max local images to embed (0 = all)
+  --top-k TOP_K
+  --label-col {classification,style,artist}
+                        Label used for relevance in metrics
+  --query-index QUERY_INDEX
+                        Query index for demo retrieval
+  --clusters CLUSTERS   KMeans clusters for style discovery (0 disables)
+  --tsne-sample TSNE_SAMPLE
+                        Max samples for t-SNE plot
+  --out-dir OUT_DIR     Directory for analysis artifacts
+  --clip-backend {auto,openai,open_clip}
+                        CLIP runtime backend selection
+  --clip-model CLIP_MODEL
+                        Model name for OpenAI CLIP backend (default: ViT-B/32)
+  --open-clip-pretrained OPEN_CLIP_PRETRAINED
+                        Pretrained tag for open_clip backend (default:
+                        laion2b_s34b_b79k)

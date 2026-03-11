@@ -1,0 +1,2 @@
+exit_code=124
+status=timeout_or_interrupted_during_model_download

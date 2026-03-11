@@ -1,0 +1,15 @@
+{
+  "channels": [
+    "rgb",
+    "ir",
+    "uv",
+    "xray"
+  ],
+  "tasks": [
+    "hidden",
+    "properties",
+    "reconstruction"
+  ],
+  "manifest_path": "/private/tmp/artextract_parallel/task1_run/resolved_manifest.csv",
+  "checkpoint_path": "/private/tmp/artextract_parallel/task1_run/best_model.pt"
+}
