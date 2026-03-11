@@ -1,0 +1,31 @@
+{
+  "seed": 42,
+  "data": {
+    "metadata_dir": "data/metadata/wikiart_csv",
+    "images_root": "data/raw/images",
+    "train_manifest": "data/manifests/train_quick_existing.csv",
+    "val_manifest": "data/manifests/val_quick_existing.csv"
+  },
+  "model": {
+    "image_size": 128,
+    "patch_grid": 4,
+    "cnn_backbone": "resnet18",
+    "pretrained_backbone": true,
+    "global_dim": 512,
+    "patch_dim": 128,
+    "rnn_hidden": 128,
+    "dropout": 0.2
+  },
+  "training": {
+    "epochs": 3,
+    "batch_size": 16,
+    "lr": 0.0005,
+    "weight_decay": 0.0001,
+    "num_workers": 0,
+    "augment": true,
+    "weighted_sampler": false,
+    "class_balanced_loss": false,
+    "label_smoothing": 0.05,
+    "multitask_uncertainty": false
+  }
+}

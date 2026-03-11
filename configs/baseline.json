@@ -1,0 +1,35 @@
+{
+  "seed": 42,
+  "data": {
+    "metadata_dir": "data/metadata/wikiart_csv",
+    "images_root": "data/raw/images",
+    "train_manifest": "data/manifests/train_multitask.csv",
+    "val_manifest": "data/manifests/val_multitask.csv"
+  },
+  "model": {
+    "image_size": 224,
+    "patch_grid": 4,
+    "cnn_backbone": "resnet18",
+    "pretrained_backbone": true,
+    "global_dim": 512,
+    "patch_dim": 256,
+    "rnn_hidden": 256,
+    "dropout": 0.2
+  },
+  "training": {
+    "epochs": 25,
+    "batch_size": 32,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "num_workers": 4,
+    "augment": true,
+    "weighted_sampler": false,
+    "class_balanced_loss": false,
+    "label_smoothing": 0.05,
+    "multitask_uncertainty": false
+  },
+  "outlier": {
+    "contamination": 0.02,
+    "min_samples_per_class": 20
+  }
+}

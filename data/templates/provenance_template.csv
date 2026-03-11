@@ -1,0 +1,3 @@
+sample_id,source_url,artist,title,year,rights_status,license_name,license_url,permission_reference,retrieved_at_utc,redistributable,local_path
+example_0001,https://example.org/artwork/1,Artist Name,Work Title,1889,public_domain,,,,2026-03-11T00:00:00Z,true,images/example_0001.jpg
+example_0002,https://example.org/artwork/2,Artist Name,Work Title 2,1912,unknown,,,,2026-03-11T00:00:00Z,false,images/example_0002.jpg

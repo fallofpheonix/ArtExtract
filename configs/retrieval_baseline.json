@@ -1,0 +1,27 @@
+{
+  "seed": 42,
+  "data": {
+    "images_root": "data/raw/wikiart",
+    "image_size": 128,
+    "train_split": 0.85,
+    "max_images": 6000
+  },
+  "model": {
+    "in_ch": 3,
+    "out_ch": 3,
+    "base_ch": 32
+  },
+  "training": {
+    "epochs": 8,
+    "batch_size": 16,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "num_workers": 0,
+    "device": null,
+    "out_dir": "outputs/hidden_retrieval"
+  },
+  "loss": {
+    "l1": 1.0,
+    "mse": 0.5
+  }
+}
