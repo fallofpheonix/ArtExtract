@@ -88,7 +88,7 @@ Required submission package:
 3. Jupyter notebook
 4. PDF of notebook with outputs
 
-### Task 1: Convolutional-Recurrent Architectures
+### Task 1: Multi-Task Painting Classification Pipeline
 Build a convolutional-recurrent model for classifying:
 1. Style
 2. Artist
