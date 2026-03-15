@@ -285,32 +285,25 @@ def evaluate(emb: np.ndarray, labels: np.ndarray, k: int) -> dict:
     }
 
 
-def kmeans_cosine(
+def kmeans_faiss(
     x: np.ndarray, k: int, iters: int = 30, seed: int = 42
 ) -> Tuple[np.ndarray, np.ndarray]:
     n, d = x.shape
     if k <= 1 or k > n:
         raise ValueError(f"Invalid k={k} for n={n}")
-    rng = np.random.default_rng(seed)
-    centers = x[rng.choice(n, size=k, replace=False)].copy()
-    faiss.normalize_L2(centers)
-    assign = np.zeros(n, dtype=np.int32)
-
-    for _ in range(iters):
-        sims = x @ centers.T
-        new_assign = np.argmax(sims, axis=1).astype(np.int32)
-        if np.array_equal(new_assign, assign):
-            break
-        assign = new_assign
-        for c in range(k):
-            mask = assign == c
-            if np.any(mask):
-                m = x[mask].mean(axis=0)
-            else:
-                m = x[rng.integers(0, n)]
-            norm = np.linalg.norm(m)
-            centers[c] = m / max(norm, 1e-12)
-    return assign, centers
+    x = np.ascontiguousarray(x, dtype="float32")
+    kmeans = faiss.Kmeans(
+        d,
+        k,
+        niter=iters,
+        seed=seed,
+        verbose=False,
+        gpu=False,
+        spherical=True,
+    )
+    kmeans.train(x)
+    _, assign = kmeans.index.search(x, 1)
+    return assign.ravel().astype(np.int32), kmeans.centroids
 
 
 def pca_2d(x: np.ndarray) -> np.ndarray:
@@ -337,7 +330,7 @@ def run_clustering(
         print(f"Clustering skipped: samples={len(table)} < clusters={k_clusters}")
         return
 
-    cluster_ids, centers = kmeans_cosine(emb, k_clusters, iters=30, seed=42)
+    cluster_ids, centers = kmeans_faiss(emb, k_clusters, iters=30, seed=42)
     table["cluster"] = cluster_ids
 
     counts = table.groupby("cluster").size().rename("count").reset_index()
