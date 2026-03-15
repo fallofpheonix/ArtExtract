@@ -21,11 +21,6 @@ except Exception:
     _HAS_TORCH = False
 
 
-def _write_img(path: Path, value: int = 128, size: int = 32) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    arr = np.full((size, size), value, dtype=np.uint8)
-    Image.fromarray(arr, mode="L").save(path)
-
 
 # ---------------------------------------------------------------------------
 # Fix 1: UNetRetrieval is an alias for ReconstructionUNet
