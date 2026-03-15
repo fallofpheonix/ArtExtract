@@ -292,7 +292,15 @@ def kmeans_faiss(
     if k <= 1 or k > n:
         raise ValueError(f"Invalid k={k} for n={n}")
     x = np.ascontiguousarray(x, dtype="float32")
-    kmeans = faiss.Kmeans(d, k, niter=iters, seed=seed, verbose=False, gpu=False)
+    kmeans = faiss.Kmeans(
+        d,
+        k,
+        niter=iters,
+        seed=seed,
+        verbose=False,
+        gpu=False,
+        spherical=True,
+    )
     kmeans.train(x)
     _, assign = kmeans.index.search(x, 1)
     return assign.ravel().astype(np.int32), kmeans.centroids
