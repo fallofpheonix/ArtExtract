@@ -1,17 +1,25 @@
 # Documentation Index
 
-## Core
-1. [Getting Started](GETTING_STARTED.md)
-2. [Architecture](ARCHITECTURE.md)
-3. [Training and Evaluation](TRAINING_AND_EVAL.md)
-4. [CLI Reference](CLI_REFERENCE.md)
-5. [Data and Compliance](DATA_AND_COMPLIANCE.md)
-6. [Troubleshooting](TROUBLESHOOTING.md)
+This directory is the canonical project knowledge base.
+If code or behavior changes, update these documents before adding new one-off notes elsewhere.
 
-## Similarity Track
-1. [Similarity README](similarity/README.md)
-2. [Similarity Run Guide](similarity/RUN.md)
-3. [Similarity Troubleshooting](similarity/TROUBLESHOOTING.md)
+## Authoritative Documents
 
-## Project Page Draft
-1. [HumanAI Project Page Draft](project_page_improved.md)
+1. [Architecture](ARCHITECTURE.md)
+   System modules, data flow, and invariants.
+2. [Development](DEVELOPMENT.md)
+   Environment setup, command entrypoints, test flow, and operational conventions.
+3. [Data Policy](DATA_POLICY.md)
+   Dataset sources, manifest contracts, provenance requirements, and redistribution rules.
+4. [Roadmap](ROADMAP.md)
+   Current technical priorities and the expected future development direction.
+
+## Task-Level Documents
+
+1. [Task 1](../task1/README.md)
+2. [Task 2](../task2/README.md)
+
+## External Policy Documents
+
+1. [Data Rights](../DATA_RIGHTS.md)
+2. [Submission Checklist](../SUBMISSION_CHECKLIST.md)
