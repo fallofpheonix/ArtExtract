@@ -374,7 +374,15 @@ def multispectral_collate(batch: Sequence[Dict[str, object]]) -> Dict[str, objec
     target_keys = sorted({k for b in batch for k in b["targets"].keys()})
     targets: Dict[str, torch.Tensor] = {}
     for k in target_keys:
-        vals = [b["targets"][k] for b in batch]
+        # target_keys was built from all samples, so at least one sample has key k
+        ref = next((bb["targets"][k] for bb in batch if k in bb["targets"]), None)
+        assert ref is not None, f"key '{k}' in target_keys but not found in any sample"
+        vals = []
+        for b in batch:
+            t = b["targets"].get(k)
+            if t is None:
+                t = torch.zeros_like(ref)
+            vals.append(t)
         targets[k] = torch.stack(vals, dim=0)
 
     meta = [b["meta"] for b in batch]

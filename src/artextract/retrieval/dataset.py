@@ -76,9 +76,11 @@ class SyntheticHiddenRetrievalDataset(Dataset):
             self.files = files[n_train:]
             self.pool = files[n_train:]
             if len(self.files) < 2:
-                # fallback so val exists even for tiny subsets
-                self.files = files[-max(2, len(files) // 10) :]
-                self.pool = self.files
+                raise ValueError(
+                    f"Validation split has only {len(self.files)} image(s) after splitting "
+                    f"{len(files)} total images with train_split={train_split}. "
+                    f"Provide more images or reduce train_split to ensure a valid validation set."
+                )
 
     def __len__(self) -> int:
         return len(self.files)

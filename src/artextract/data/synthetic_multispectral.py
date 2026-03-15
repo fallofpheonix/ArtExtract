@@ -108,7 +108,11 @@ def generate_synthetic_multispectral_dataset(
     out_root = Path(out_root)
     files = _list_images(src_root)
     if len(files) < 4:
-        raise ValueError(f"need at least 4 source images for synthetic set: found {len(files)}")
+        raise ValueError(
+            f"Need at least 4 source images to generate a synthetic multispectral dataset, "
+            f"but only found {len(files)} image(s) under '{src_root}'. "
+            f"Add more images to the source directory (minimum 4 required) and try again."
+        )
 
     if max_samples > 0:
         files = files[:max_samples]

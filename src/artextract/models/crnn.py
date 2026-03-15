@@ -107,8 +107,6 @@ class CRNNMultiTask(nn.Module):
         g = self.global_proj(g)
         seq = self._extract_patch_sequence(x)
         _, h = self.rnn(seq)
-        if isinstance(h, tuple):
-            h = h[0]
         h = h.transpose(0, 1).reshape(x.size(0), -1)
 
         z = torch.cat([g, h], dim=1)

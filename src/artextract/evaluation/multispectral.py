@@ -210,18 +210,18 @@ def evaluate_multispectral(
                 all_rest_true.extend(res_true.tolist())
 
             if "reconstruction" in tasks_set:
-                pred = out["reconstruction"].cpu().numpy()
-                tgt = targets["hidden_gt"].cpu().numpy()
+                recon_pred = out["reconstruction"].cpu().numpy()
+                recon_target = targets["hidden_gt"].cpu().numpy()
                 inp = x.cpu().numpy()
 
-                mse_vals = ((pred - tgt) ** 2).mean(axis=(1, 2, 3))
-                for i in range(pred.shape[0]):
+                mse_vals = ((recon_pred - recon_target) ** 2).mean(axis=(1, 2, 3))
+                for i in range(recon_pred.shape[0]):
                     recon_psnr.append(psnr(float(mse_vals[i])))
-                    recon_ssim.append(ssim_simple(pred[i], tgt[i]))
+                    recon_ssim.append(ssim_simple(recon_pred[i], recon_target[i]))
 
                 recon_x.append(inp)
-                recon_p.append(pred)
-                recon_t.append(tgt)
+                recon_p.append(recon_pred)
+                recon_t.append(recon_target)
 
     metrics: Dict[str, object] = {
         "samples_val": len(val_ds),
