@@ -376,7 +376,8 @@ def multispectral_collate(batch: Sequence[Dict[str, object]]) -> Dict[str, objec
     for k in target_keys:
         # target_keys was built from all samples, so at least one sample has key k
         ref = next((bb["targets"][k] for bb in batch if k in bb["targets"]), None)
-        assert ref is not None, f"key '{k}' in target_keys but not found in any sample"
+        if ref is None:
+            raise KeyError(f"key '{k}' in target_keys but not found in any sample")
         vals = []
         for b in batch:
             t = b["targets"].get(k)
