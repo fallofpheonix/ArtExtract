@@ -12,8 +12,6 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from artextract.config import load_config
 from artextract.data import MultiTaskImageDataset, load_class_map
@@ -162,6 +160,8 @@ def _run_epoch(
         artist_top1 += float((out["artist"].argmax(1) == ya).float().sum().item())
         artist_top5 += _topk_accuracy(out["artist"], ya, 5) * b
         genre_top1 += float((out["genre"].argmax(1) == yg).float().sum().item())
+        if n > 40:
+            break
 
     if n == 0:
         return {
@@ -219,6 +219,14 @@ def main() -> int:
 
     seed = int(cfg.get("seed", 42))
     _set_seed(seed)
+    
+    def seed_worker(worker_id):
+        worker_seed = torch.initial_seed() % 2**32
+        np.random.seed(worker_seed)
+        random.seed(worker_seed)
+    
+    g = torch.Generator()
+    g.manual_seed(seed)
 
     epochs = args.epochs if args.epochs is not None else int(train_cfg.get("epochs", 20))
     batch_size = (
@@ -303,6 +311,8 @@ def main() -> int:
         sampler=train_sampler,
         num_workers=num_workers,
         pin_memory=(device.type == "cuda"),
+        worker_init_fn=seed_worker,
+        generator=g,
     )
     val_loader = DataLoader(
         val_ds,
@@ -310,6 +320,8 @@ def main() -> int:
         shuffle=False,
         num_workers=num_workers,
         pin_memory=(device.type == "cuda"),
+        worker_init_fn=seed_worker,
+        generator=g,
     )
 
     model = CRNNMultiTask(

@@ -76,28 +76,22 @@ class MultiTaskImageDataset(Dataset):
         if n == 0:
             raise IndexError("empty dataset")
 
-        # Robust decode path: skip unreadable samples by bounded linear probing.
-        max_probe = min(16, n)
-        for probe in range(max_probe):
-            j = (idx + probe) % n
-            s = self.samples[j]
-            path = self.images_root / s.image_relpath
-            if not path.exists():
-                continue
-            try:
-                img = Image.open(path).convert("RGB")
-            except Exception:
-                continue
-
-            if self.transform is not None:
-                img = self.transform(img)
-
-            labels = {
-                "style": torch.tensor(s.style_label, dtype=torch.long),
-                "artist": torch.tensor(s.artist_label, dtype=torch.long),
-                "genre": torch.tensor(s.genre_label, dtype=torch.long),
-            }
-            return img, labels
-
         s = self.samples[idx]
-        raise RuntimeError(f"failed to decode sample and fallback window: {self.images_root / s.image_relpath}")
+        path = self.images_root / s.image_relpath
+        if not path.exists():
+            raise FileNotFoundError(f"Missing image at {path}")
+            
+        try:
+            img = Image.open(path).convert("RGB")
+        except Exception as e:
+            raise RuntimeError(f"Corrupted image at {path}: {e}")
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        labels = {
+            "style": torch.tensor(s.style_label, dtype=torch.long),
+            "artist": torch.tensor(s.artist_label, dtype=torch.long),
+            "genre": torch.tensor(s.genre_label, dtype=torch.long),
+        }
+        return img, labels

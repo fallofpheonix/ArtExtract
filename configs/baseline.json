@@ -2,7 +2,7 @@
   "seed": 42,
   "data": {
     "metadata_dir": "data/metadata/wikiart_csv",
-    "images_root": "data/raw/images",
+    "images_root": "/tmp/art_data/raw/images",
     "train_manifest": "data/manifests/train_multitask.csv",
     "val_manifest": "data/manifests/val_multitask.csv"
   },
