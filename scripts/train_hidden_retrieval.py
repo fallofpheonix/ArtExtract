@@ -11,12 +11,16 @@ from typing import Dict
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+# SRC = ROOT / "src"  # Removed path hack
 
 from artextract.config import load_config
-from artextract.retrieval import SyntheticHiddenRetrievalDataset, UNetRetrieval, mae, mse, psnr
+from artextract.reconstruction import (
+    SyntheticHiddenRetrievalDataset,
+    ReconstructionUNet as UNetRetrieval,
+    mae,
+    mse,
+    psnr,
+)
 from artextract.utils import ensure_parent_dir
 
 try:

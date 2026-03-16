@@ -9,10 +9,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+# ROOT = Path(__file__).resolve().parents[1] # Removed path hack
+# SRC = ROOT / "src"
 
 try:
     import torch
@@ -28,8 +26,8 @@ except Exception:
 class TestUNetAlias(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_unet_retrieval_is_reconstruction_unet(self) -> None:
-        from artextract.retrieval.model import UNetRetrieval
-        from artextract.reconstruction.unet import ReconstructionUNet
+        from artextract.retrieval import UNetRetrieval
+        from artextract.reconstruction import ReconstructionUNet
         # The alias must resolve to the canonical class
         self.assertIs(UNetRetrieval, ReconstructionUNet)
 
@@ -142,7 +140,7 @@ class TestMultispectralCollateRobust(unittest.TestCase):
 class TestRetrievalDatasetNoLeakage(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_val_split_raises_on_too_few_images(self) -> None:
-        from artextract.retrieval.dataset import SyntheticHiddenRetrievalDataset
+        from artextract.reconstruction import SyntheticHiddenRetrievalDataset
 
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
