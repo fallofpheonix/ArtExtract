@@ -37,3 +37,7 @@ configs/.runtime*.json
 # Local tooling caches
 .codex/
 .hf_cache/
+
+# Environment overrides
+.env
+.env.local
