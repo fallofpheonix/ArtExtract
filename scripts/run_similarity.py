@@ -4,13 +4,16 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# ROOT = Path(__file__).resolve().parents[1] # Removed path hack
-# SRC = ROOT / "src"
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    # Why: the repo still documents direct script execution from a checkout.
+    sys.path.insert(0, str(SRC))
 
 
 def main() -> int:
     try:
-        from artextract.retrieval.cli import main as run_retrieval_main
+        from artextract.api.similarity_cli import main as run_retrieval_main
         return int(run_retrieval_main())
     except Exception as e:
         print(
