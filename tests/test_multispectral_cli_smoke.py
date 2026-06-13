@@ -40,7 +40,7 @@ class MultiSpectralCliSmokeTests(unittest.TestCase):
                 },
                 "loss_weights": {"property": 1.0, "hidden": 1.0, "reconstruction": 1.0},
             }
-            cfg_path = root / "cfg.json"
+            cfg_path = root / "cfg.yaml"
             cfg_path.write_text(json.dumps(cfg), encoding="utf-8")
 
             out_dir = root / "run"
@@ -75,7 +75,7 @@ class MultiSpectralCliSmokeTests(unittest.TestCase):
                 "--checkpoint",
                 str(out_dir / "best_model.pt"),
                 "--pigments-vocab",
-                str(out_dir / "pigments_vocab.json"),
+                str(out_dir / "pigments_vocab.yaml"),
                 "--channels",
                 "rgb,ir,uv,xray",
                 "--tasks",
@@ -89,8 +89,8 @@ class MultiSpectralCliSmokeTests(unittest.TestCase):
             ]
             subprocess.run(eval_cmd, check=True, cwd=repo)
 
-            self.assertTrue((out_dir / "metrics.json").exists())
-            self.assertTrue((out_dir / "run_meta.json").exists())
+            self.assertTrue((out_dir / "metrics.yaml").exists())
+            self.assertTrue((out_dir / "run_meta.yaml").exists())
             self.assertTrue((out_dir / "confusion_matrix.png").exists())
             self.assertTrue((out_dir / "roc_curve.png").exists())
             self.assertTrue((out_dir / "recon_examples").exists())

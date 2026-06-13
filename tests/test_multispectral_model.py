@@ -16,7 +16,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from artextract.models import MultiSpectralMultiTaskModel
+from artextract.core.models import MultiSpectralMultiTaskModel
 
 
 class MultiSpectralModelTests(unittest.TestCase):

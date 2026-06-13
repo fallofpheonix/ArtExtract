@@ -13,7 +13,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from artextract.training.outliers import classwise_isolation_outliers
+from artextract.services.training.outliers import classwise_isolation_outliers
 from artextract.utils import ensure_parent_dir
 
 

@@ -7,15 +7,17 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from artextract.config import load_config
-from artextract.data import MultiTaskImageDataset, load_class_map
-from artextract.models import CRNNMultiTask
-from artextract.training.metrics import classification_metrics
+from artextract.core.data import MultiTaskImageDataset, load_class_map
+from artextract.core.models import CRNNMultiTask
+from artextract.services.training.metrics import classification_metrics
 
 
 def main() -> int:
@@ -28,9 +30,9 @@ def main() -> int:
         return 2
 
     p = argparse.ArgumentParser(description="Evaluate trained CRNN checkpoint on val manifest")
-    p.add_argument("--config", default="configs/baseline.json")
+    p.add_argument("--config", default="configs/baseline.yaml")
     p.add_argument("--checkpoint", required=True)
-    p.add_argument("--out", default="outputs/val_metrics.json")
+    p.add_argument("--out", default="outputs/val_metrics.yaml")
     p.add_argument("--predictions-out", default=None, help="Optional CSV export of per-sample predictions")
     p.add_argument("--embeddings-out", default=None, help="Optional .npy export for fused embeddings")
     p.add_argument("--style-labels-out", default=None, help="Optional .npy export for style labels")
@@ -117,7 +119,8 @@ def main() -> int:
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    with out.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(metrics, f, sort_keys=False)
 
     if args.predictions_out:
         p_out = Path(args.predictions_out)

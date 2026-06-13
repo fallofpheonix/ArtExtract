@@ -13,8 +13,8 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from artextract.data import MultiSpectralDataset, load_multispectral_manifest
-from artextract.data.multispectral import (
+from artextract.core.data import MultiSpectralDataset, load_multispectral_manifest
+from artextract.core.data.multispectral import (
     MultiSpectralRecord,
     write_multispectral_manifest_csv,
 )

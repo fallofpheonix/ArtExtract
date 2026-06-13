@@ -9,14 +9,50 @@ from artextract.services import SimilarityRetrievalService
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CLIP + FAISS painting retrieval pipeline")
-    parser.add_argument("--images-dir", default="images")
-    parser.add_argument("--opendata-dir", default="nga_data")
-    parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--max-images", type=int, default=1200)
-    parser.add_argument("--top-k", type=int, default=10)
-    parser.add_argument("--label-col", default="classification")
-    parser.add_argument("--out-dir", default=None)
-    parser.add_argument("--clusters", type=int, default=20)
+    parser.add_argument(
+        "--images-dir", 
+        default="images", 
+        help="Directory containing the painting images to index (default: images)"
+    )
+    parser.add_argument(
+        "--opendata-dir", 
+        default="nga_data", 
+        help="Directory containing the NGA Open Data metadata (default: nga_data)"
+    )
+    parser.add_argument(
+        "--batch-size", 
+        type=int, 
+        default=64, 
+        help="Batch size for embedding extraction (default: 64)"
+    )
+    parser.add_argument(
+        "--max-images", 
+        type=int, 
+        default=1200, 
+        help="Maximum number of images to process (default: 1200)"
+    )
+    parser.add_argument(
+        "--top-k", 
+        type=int, 
+        default=10, 
+        help="Number of nearest neighbors to retrieve for evaluation (default: 10)"
+    )
+    parser.add_argument(
+        "--label-col", 
+        default="classification", 
+        help="Metadata column to use as the ground-truth label for evaluation (default: classification)"
+    )
+    parser.add_argument(
+        "--out-dir", 
+        default=None, 
+        help="Directory to save analysis results (default: value from ARTEXTRACT_OUT_DIR env var or ./analysis_out)"
+    )
+    parser.add_argument(
+        "--clusters", 
+        type=int, 
+        default=20, 
+        help="Number of clusters for K-means qualitative analysis (default: 20)"
+    )
     return parser
 
 

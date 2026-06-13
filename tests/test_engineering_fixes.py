@@ -26,14 +26,14 @@ except Exception:
 class TestUNetAlias(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_unet_retrieval_is_reconstruction_unet(self) -> None:
-        from artextract.retrieval import UNetRetrieval
-        from artextract.reconstruction import ReconstructionUNet
+        from artextract.services.retrieval import UNetRetrieval
+        from artextract.core.reconstruction import ReconstructionUNet
         # The alias must resolve to the canonical class
         self.assertIs(UNetRetrieval, ReconstructionUNet)
 
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_unet_retrieval_forward(self) -> None:
-        from artextract.retrieval import UNetRetrieval
+        from artextract.services.retrieval import UNetRetrieval
         model = UNetRetrieval(in_channels=3, out_channels=3, base_channels=8)
         x = torch.rand(2, 3, 32, 32)
         y = model(x)
@@ -46,7 +46,7 @@ class TestUNetAlias(unittest.TestCase):
 class TestCRNNForwardPass(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_crnn_embedding_dimension(self) -> None:
-        from artextract.models.crnn import CRNNMultiTask
+        from artextract.core.models.crnn import CRNNMultiTask
         rnn_hidden = 64
         model = CRNNMultiTask(
             style_classes=5,
@@ -65,7 +65,7 @@ class TestCRNNForwardPass(unittest.TestCase):
 
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_crnn_output_keys(self) -> None:
-        from artextract.models.crnn import CRNNMultiTask
+        from artextract.core.models.crnn import CRNNMultiTask
         model = CRNNMultiTask(style_classes=3, artist_classes=4, genre_classes=2)
         x = torch.rand(1, 3, 64, 64)
         out = model(x)
@@ -79,7 +79,7 @@ class TestCRNNForwardPass(unittest.TestCase):
 class TestMultispectralCollateRobust(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_collate_missing_target_key_uses_zero(self) -> None:
-        from artextract.data.multispectral import multispectral_collate
+        from artextract.core.data.multispectral import multispectral_collate
 
         t_pigments = torch.zeros(6, dtype=torch.float32)
         t_hidden = torch.tensor(1.0, dtype=torch.float32)
@@ -118,7 +118,7 @@ class TestMultispectralCollateRobust(unittest.TestCase):
 
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_collate_consistent_shapes(self) -> None:
-        from artextract.data.multispectral import multispectral_collate
+        from artextract.core.data.multispectral import multispectral_collate
 
         samples = [
             {
@@ -140,7 +140,7 @@ class TestMultispectralCollateRobust(unittest.TestCase):
 class TestRetrievalDatasetNoLeakage(unittest.TestCase):
     @unittest.skipUnless(_HAS_TORCH, "torch is required")
     def test_val_split_raises_on_too_few_images(self) -> None:
-        from artextract.reconstruction import SyntheticHiddenRetrievalDataset
+        from artextract.core.reconstruction import SyntheticHiddenRetrievalDataset
 
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -164,12 +164,12 @@ class TestRetrievalDatasetNoLeakage(unittest.TestCase):
 # ---------------------------------------------------------------------------
 class TestTrainingExports(unittest.TestCase):
     def test_classwise_isolation_outliers_exported(self) -> None:
-        from artextract.training import classwise_isolation_outliers
+        from artextract.services.training import classwise_isolation_outliers
         self.assertTrue(callable(classwise_isolation_outliers))
 
     def test_classwise_isolation_outliers_runs(self) -> None:
-        from artextract.training import classwise_isolation_outliers
-        from artextract.training.outliers import OutlierResult
+        from artextract.services.training import classwise_isolation_outliers
+        from artextract.services.training.outliers import OutlierResult
         rng = np.random.default_rng(0)
         emb = rng.standard_normal((50, 16)).astype(np.float32)
         y = np.array([i % 3 for i in range(50)], dtype=np.int64)

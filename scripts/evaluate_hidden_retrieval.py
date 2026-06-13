@@ -6,11 +6,13 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 # SRC = ROOT / "src" # Removed path hack
 
 from artextract.config import load_config
-from artextract.reconstruction import (
+from artextract.core.reconstruction import (
     SyntheticHiddenRetrievalDataset,
     ReconstructionUNet as UNetRetrieval,
     mae,
@@ -41,9 +43,9 @@ def _select_device(arg: str | None) -> "torch.device":
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Evaluate hidden-image retrieval checkpoint")
-    p.add_argument("--config", default="configs/retrieval_baseline.json")
+    p.add_argument("--config", default="configs/retrieval_baseline.yaml")
     p.add_argument("--checkpoint", required=True)
-    p.add_argument("--out", default="outputs/hidden_retrieval/val_metrics_eval.json")
+    p.add_argument("--out", default="outputs/hidden_retrieval/val_metrics_eval.yaml")
     p.add_argument("--batch-size", type=int, default=None)
     p.add_argument("--num-workers", type=int, default=None)
     p.add_argument("--device", default=None)
@@ -119,7 +121,8 @@ def main() -> int:
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    with out.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(metrics, f, sort_keys=False)
     print(json.dumps(metrics, indent=2))
     return 0
 

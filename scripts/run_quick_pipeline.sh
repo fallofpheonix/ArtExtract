@@ -17,7 +17,7 @@ PER_STYLE_VAL="${PER_STYLE_VAL:-10}"
 SKIP_DOWNLOAD="${SKIP_DOWNLOAD:-0}"
 DOWNLOAD_TIMEOUT="${DOWNLOAD_TIMEOUT:-8}"
 IMAGES_ROOT="${IMAGES_ROOT:-}"
-RUNTIME_CONFIG="${RUNTIME_CONFIG:-configs/.runtime_quick_cpu.json}"
+RUNTIME_CONFIG="${RUNTIME_CONFIG:-configs/.runtime_quick_cpu.yaml}"
 VALIDATE_IMAGES="${VALIDATE_IMAGES:-1}"
 
 echo "[1/9] bootstrap venv"
@@ -180,7 +180,7 @@ echo "[7/9] build runtime config"
 import json
 from pathlib import Path
 
-src = Path("configs/quick_cpu.json")
+src = Path("configs/quick_cpu.yaml")
 dst = Path("${RUNTIME_CONFIG}")
 cfg = json.loads(src.read_text(encoding="utf-8"))
 cfg["data"]["images_root"] = "${IMAGES_ROOT}"
@@ -203,7 +203,7 @@ echo "[9/9] evaluate + outliers"
 "${VENV_DIR}/bin/python" scripts/evaluate_model.py \
   --config "${RUNTIME_CONFIG}" \
   --checkpoint "${OUT_DIR}/best_model.pt" \
-  --out "${OUT_DIR}/val_metrics.json" \
+  --out "${OUT_DIR}/val_metrics.yaml" \
   --predictions-out "${OUT_DIR}/val_predictions.csv" \
   --embeddings-out "${OUT_DIR}/val_embeddings.npy" \
   --style-labels-out "${OUT_DIR}/val_style_labels.npy"
@@ -215,6 +215,6 @@ echo "[9/9] evaluate + outliers"
   --min-samples-per-class 5
 
 echo "done"
-echo "metrics: ${OUT_DIR}/val_metrics.json"
+echo "metrics: ${OUT_DIR}/val_metrics.yaml"
 echo "predictions: ${OUT_DIR}/val_predictions.csv"
 echo "outliers: ${OUT_DIR}/style_outliers.csv"

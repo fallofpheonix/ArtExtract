@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import Request, urlopen
+from tqdm import tqdm
 
 HOSTS = ["uploads8", "uploads7", "uploads6", "uploads5"]
 
@@ -75,16 +76,17 @@ def main() -> int:
 
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:
         futs = [ex.submit(fetch_one, rp, out_root, args.timeout) for rp in relpaths]
-        for i, fut in enumerate(as_completed(futs), start=1):
-            status, _ = fut.result()
-            if status == "ok":
-                ok += 1
-            elif status == "exists":
-                exists += 1
-            else:
-                miss += 1
-            if i % 100 == 0 or i == len(relpaths):
-                print(f"progress {i}/{len(relpaths)} ok={ok} exists={exists} miss={miss}")
+        with tqdm(total=len(relpaths), desc="Downloading images") as pbar:
+            for fut in as_completed(futs):
+                status, _ = fut.result()
+                if status == "ok":
+                    ok += 1
+                elif status == "exists":
+                    exists += 1
+                else:
+                    miss += 1
+                pbar.update(1)
+                pbar.set_postfix(ok=ok, exists=exists, miss=miss)
 
     print(f"done total={len(relpaths)} ok={ok} exists={exists} miss={miss}")
     return 0

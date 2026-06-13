@@ -21,14 +21,14 @@ class SimilarityRetrievalService:
 
     def run(self) -> dict[str, Any]:
         try:
-            from artextract.retrieval.index import FaissIndex, kmeans_clustering
+            from artextract.services.retrieval.index import FaissIndex, kmeans_clustering
             index_backend = "faiss"
         except ModuleNotFoundError:
             FaissIndex = None
             kmeans_clustering = None
             index_backend = "none"
 
-        from artextract.retrieval.metrics import evaluate_retrieval
+        from artextract.services.retrieval.metrics import evaluate_retrieval
 
         config = self.runtime
         if config.top_k <= 0:
@@ -39,7 +39,7 @@ class SimilarityRetrievalService:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         if self._retriever_factory is None:
             try:
-                from artextract.retrieval.semantic import CLIPRetriever
+                from artextract.services.retrieval.semantic import CLIPRetriever
             except ModuleNotFoundError as exc:
                 raise RuntimeError(
                     "retrieval runtime dependency missing; install requirements.txt"

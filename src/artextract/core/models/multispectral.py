@@ -12,7 +12,7 @@ except Exception as e:  # pragma: no cover
 else:
     _IMPORT_ERROR = None
 
-from artextract.reconstruction import ReconstructionUNet
+from artextract.core.reconstruction import ReconstructionUNet
 
 
 class EncoderBlock(nn.Module):

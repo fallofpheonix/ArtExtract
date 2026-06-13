@@ -10,8 +10,8 @@ BATCH_SIZE="${BATCH_SIZE:-12}"
 MAX_IMAGES="${MAX_IMAGES:-2500}"
 OUT_DIR="${OUT_DIR:-outputs/hidden_retrieval_quick}"
 TRAIN_WORKERS="${TRAIN_WORKERS:-0}"
-CONFIG_PATH="${CONFIG_PATH:-configs/retrieval_baseline.json}"
-RUNTIME_CONFIG="${RUNTIME_CONFIG:-configs/.runtime_retrieval.json}"
+CONFIG_PATH="${CONFIG_PATH:-configs/retrieval_baseline.yaml}"
+RUNTIME_CONFIG="${RUNTIME_CONFIG:-configs/.runtime_retrieval.yaml}"
 IMAGES_ROOT="${IMAGES_ROOT:-}"
 
 if [[ ! -x "${VENV_DIR}/bin/python" ]]; then
@@ -66,9 +66,9 @@ PY
 "${VENV_DIR}/bin/python" scripts/evaluate_hidden_retrieval.py \
   --config "${RUNTIME_CONFIG}" \
   --checkpoint "${OUT_DIR}/best_model.pt" \
-  --out "${OUT_DIR}/val_metrics_eval.json"
+  --out "${OUT_DIR}/val_metrics_eval.yaml"
 
 echo "done"
-echo "train metrics: ${OUT_DIR}/metrics.json"
-echo "eval metrics: ${OUT_DIR}/val_metrics_eval.json"
+echo "train metrics: ${OUT_DIR}/metrics.yaml"
+echo "eval metrics: ${OUT_DIR}/val_metrics_eval.yaml"
 echo "preview: ${OUT_DIR}/val_preview.png"

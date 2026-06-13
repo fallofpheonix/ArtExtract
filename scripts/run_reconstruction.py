@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime
+from pathlib import Path
+import yaml
+
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,16 +15,16 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from artextract.config import load_config
-from artextract.data import generate_synthetic_multispectral_dataset
+from artextract.core.data import generate_synthetic_multispectral_dataset
 from artextract.evaluation import evaluate_multispectral
-from artextract.training import train_multispectral
+from artextract.services.training import train_multispectral
 
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Thin wrapper for hidden+reconstruction multispectral run")
     p.add_argument("--images-root", required=True, help="Source image root for synthetic multispectral harness")
     p.add_argument("--channels", default="rgb,ir,uv,xray")
-    p.add_argument("--config", default="configs/multispectral_baseline.json")
+    p.add_argument("--config", default="configs/multispectral_baseline.yaml")
     p.add_argument("--out-dir", default="")
     p.add_argument("--max-samples", type=int, default=300)
     p.add_argument("--device", default=None)
@@ -61,7 +63,7 @@ def main() -> int:
         cfg=cfg,
         checkpoint_path=artifacts.best_checkpoint,
         out_dir=artifacts.out_dir,
-        pigments_vocab_path=artifacts.out_dir / "pigments_vocab.json",
+        pigments_vocab_path=artifacts.out_dir / "pigments_vocab.yaml",
         device=args.device,
     )
 

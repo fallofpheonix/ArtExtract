@@ -9,12 +9,13 @@ from pathlib import Path
 from typing import Dict, Iterable, List
 
 import numpy as np
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 
 from artextract.config import load_config
-from artextract.data import MultiTaskImageDataset, load_class_map
+from artextract.core.data import MultiTaskImageDataset, load_class_map
 from artextract.utils import ensure_parent_dir
 
 try:
@@ -189,7 +190,7 @@ def _run_epoch(
 
 def main() -> int:
     p = argparse.ArgumentParser(description="CRNN multi-task training entrypoint")
-    p.add_argument("--config", default="configs/baseline.json")
+    p.add_argument("--config", default="configs/baseline.yaml")
     p.add_argument("--epochs", type=int, default=None)
     p.add_argument("--batch-size", type=int, default=None)
     p.add_argument("--lr", type=float, default=None)
@@ -202,7 +203,7 @@ def main() -> int:
         print(f"error: torch/torchvision unavailable: {_IMPORT_ERROR}", file=sys.stderr)
         return 2
 
-    from artextract.models import CRNNMultiTask
+    from artextract.core.models import CRNNMultiTask
 
     cfg = load_config(args.config)
     data_cfg = cfg.get("data", {})
@@ -416,9 +417,8 @@ def main() -> int:
             best_style = val_m["style_top1"]
             torch.save(model.state_dict(), out_dir / "best_model.pt")
 
-    hist_path = out_dir / "training_history.json"
-    with hist_path.open("w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2)
+    hist_path = out_dir / "training_history.yaml"
+    with hist_path.open("w", encoding="utf-8") as f: yaml.safe_dump(history, f, sort_keys=False)
 
     run_meta = {
         "seed": seed,
@@ -434,8 +434,8 @@ def main() -> int:
         "train_samples": len(train_ds),
         "val_samples": len(val_ds),
     }
-    with (out_dir / "run_meta.json").open("w", encoding="utf-8") as f:
-        json.dump(run_meta, f, indent=2)
+    with (out_dir / "run_meta.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(run_meta, f, sort_keys=False)
 
     print(f"done: best_val_style_top1={best_style:.4f}")
     print(f"artifacts: {out_dir / 'best_model.pt'} {out_dir / 'last_model.pt'} {hist_path}")

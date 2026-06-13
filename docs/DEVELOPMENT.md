@@ -24,9 +24,9 @@ pip install -r requirements_similarity.txt
 ### Task 1
 
 ```bash
-python scripts/train_crnn.py --config configs/baseline.json
-python scripts/evaluate_model.py --config configs/baseline.json
-python scripts/detect_outliers.py --config configs/baseline.json
+python scripts/train_crnn.py --config configs/baseline.yaml
+python scripts/evaluate_model.py --config configs/baseline.yaml
+python scripts/detect_outliers.py --config configs/baseline.yaml
 ```
 
 ### Task 2
@@ -42,7 +42,7 @@ python scripts/train.py \
   --manifest data/manifests/multispectral.csv \
   --channels rgb,ir,uv,xray \
   --tasks properties,hidden,reconstruction \
-  --config configs/multispectral_baseline.json \
+  --config configs/multispectral_baseline.yaml \
   --out-dir reports/run_ms
 ```
 
@@ -52,10 +52,10 @@ python scripts/train.py \
 python scripts/eval.py \
   --manifest reports/run_ms/resolved_manifest.csv \
   --checkpoint reports/run_ms/best_model.pt \
-  --pigments-vocab reports/run_ms/pigments_vocab.json \
+  --pigments-vocab reports/run_ms/pigments_vocab.yaml \
   --channels rgb,ir,uv,xray \
   --tasks properties,hidden,reconstruction \
-  --config configs/multispectral_baseline.json \
+  --config configs/multispectral_baseline.yaml \
   --out-dir reports/run_ms
 ```
 
@@ -95,8 +95,8 @@ Generated outputs belong in `reports/` or `test_results/`, not inside source doc
 
 Expected multispectral outputs:
 
-1. `metrics.json`
-2. `run_meta.json`
+1. `metrics.yaml`
+2. `run_meta.yaml`
 3. `confusion_matrix.png`
 4. `roc_curve.png`
 5. `recon_examples/`

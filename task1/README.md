@@ -29,15 +29,15 @@ Local metadata contract:
 4. `src/artextract/models/crnn.py`
 5. `src/artextract/data/multitask.py`
 6. `src/artextract/training/outliers.py`
-7. `configs/baseline.json`
+7. `configs/baseline.yaml`
 8. `configs/baseline.yaml`
 
 ## Typical Workflow
 
 ```bash
-python scripts/train_crnn.py --config configs/baseline.json
-python scripts/evaluate_model.py --config configs/baseline.json
-python scripts/detect_outliers.py --config configs/baseline.json
+python scripts/train_crnn.py --config configs/baseline.yaml
+python scripts/evaluate_model.py --config configs/baseline.yaml
+python scripts/detect_outliers.py --config configs/baseline.yaml
 ```
 
 ## Expected Outputs

@@ -28,7 +28,7 @@ ArtExtract is organized as a multi-track repository with shared data utilities a
 Data flow:
 
 1. WikiArt split CSVs in `data/metadata/wikiart_csv/` are joined into train and validation manifests.
-2. `scripts/train_crnn.py` loads `configs/baseline.json` or `configs/baseline.yaml`.
+2. `scripts/train_crnn.py` loads `configs/baseline.yaml` or `configs/baseline.yaml`.
 3. `src/artextract/data/multitask.py` builds RGB image batches with labels for style, artist, and genre.
 4. `src/artextract/models/crnn.py` emits one head per target.
 5. `scripts/evaluate_model.py` computes metrics.
@@ -84,14 +84,14 @@ Where:
 2. `L_hidden` is binary classification loss
 3. `L_reconstruction` is `L1 + MSE`
 
-Weights are configured in `configs/multispectral_baseline.json`.
+Weights are configured in `configs/multispectral_baseline.yaml`.
 
 ## Output Contracts
 
 The unified multispectral evaluation path writes:
 
-1. `metrics.json`
-2. `run_meta.json`
+1. `metrics.yaml`
+2. `run_meta.yaml`
 3. `confusion_matrix.png` when hidden detection is enabled
 4. `roc_curve.png` when hidden detection is enabled
 5. `recon_examples/` when reconstruction is enabled

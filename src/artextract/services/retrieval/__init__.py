@@ -2,7 +2,7 @@ from .base import SearchResult, BaseRetriever, BaseIndex
 from .semantic import CLIPRetriever
 from .index import FaissIndex, kmeans_clustering
 from .metrics import evaluate_retrieval
-from artextract.reconstruction import ReconstructionUNet as UNetRetrieval
+from artextract.core.reconstruction import ReconstructionUNet as UNetRetrieval
 
 __all__ = [
     "SearchResult",

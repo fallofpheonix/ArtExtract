@@ -6,7 +6,7 @@ from typing import Dict, Iterable, Sequence
 
 import numpy as np
 
-from artextract.data import MultiSpectralDataset, multispectral_collate
+from artextract.core.data import MultiSpectralDataset, multispectral_collate
 from artextract.evaluation.metrics import (
     auc_trapezoid,
     binary_accuracy,
@@ -18,7 +18,7 @@ from artextract.evaluation.metrics import (
     roc_curve_binary,
     ssim_simple,
 )
-from artextract.models import MultiSpectralMultiTaskModel
+from artextract.core.models import MultiSpectralMultiTaskModel
 
 try:
     import matplotlib.pyplot as plt
@@ -283,7 +283,7 @@ def evaluate_multispectral(
             t = np.concatenate(recon_t, axis=0)
             _save_recon_examples(x, p, t, out_dir / "recon_examples", limit=5)
 
-    metrics_path = out_dir / "metrics.json"
+    metrics_path = out_dir / "metrics.yaml"
     with metrics_path.open("w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2)
 
@@ -293,7 +293,7 @@ def evaluate_multispectral(
         "manifest_path": str(Path(manifest_path).resolve()),
         "checkpoint_path": str(Path(checkpoint_path).resolve()),
     }
-    with (out_dir / "run_meta.json").open("w", encoding="utf-8") as f:
+    with (out_dir / "run_meta.yaml").open("w", encoding="utf-8") as f:
         json.dump(run_meta, f, indent=2)
 
     return metrics_path

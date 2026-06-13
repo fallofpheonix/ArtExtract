@@ -5,6 +5,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -26,7 +27,7 @@ def main() -> int:
     p.add_argument("--pigments-vocab", required=True)
     p.add_argument("--channels", default="rgb,ir,uv,xray")
     p.add_argument("--tasks", default="properties,hidden")
-    p.add_argument("--config", default="configs/multispectral_baseline.json")
+    p.add_argument("--config", default="configs/multispectral_baseline.yaml")
     p.add_argument("--out-dir", required=True)
     p.add_argument("--device", default=None)
     args = p.parse_args()

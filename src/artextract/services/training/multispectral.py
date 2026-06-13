@@ -8,15 +8,15 @@ from typing import Dict, Iterable, Sequence
 
 import numpy as np
 
-from artextract.data import (
+from artextract.core.data import (
     MultiSpectralDataset,
     MultiSpectralRecord,
     collect_pigment_vocab,
     load_multispectral_manifest,
     multispectral_collate,
 )
-from artextract.data.multispectral import write_multispectral_manifest_csv
-from artextract.models import MultiSpectralMultiTaskModel
+from artextract.core.data.multispectral import write_multispectral_manifest_csv
+from artextract.core.models import MultiSpectralMultiTaskModel
 
 try:
     import torch
@@ -213,7 +213,7 @@ def train_multispectral(
 
     train_records = [r for r in records if r.split == "train"]
     pigments_vocab = collect_pigment_vocab(train_records)
-    with (out_dir / "pigments_vocab.json").open("w", encoding="utf-8") as f:
+    with (out_dir / "pigments_vocab.yaml").open("w", encoding="utf-8") as f:
         json.dump(pigments_vocab, f, indent=2)
 
     image_size = int(model_cfg.get("image_size", 128))
@@ -315,7 +315,7 @@ def train_multispectral(
             best_val = val_m["loss_total"]
             torch.save(model.state_dict(), ckpt_best)
 
-    history_path = out_dir / "training_history.json"
+    history_path = out_dir / "training_history.yaml"
     with history_path.open("w", encoding="utf-8") as f:
         json.dump(history, f, indent=2)
 
@@ -335,7 +335,7 @@ def train_multispectral(
         "resolved_manifest": str(resolved_manifest_path.resolve()),
         "config": cfg,
     }
-    run_meta_path = out_dir / "run_meta.json"
+    run_meta_path = out_dir / "run_meta.yaml"
     with run_meta_path.open("w", encoding="utf-8") as f:
         json.dump(run_meta, f, indent=2)
 

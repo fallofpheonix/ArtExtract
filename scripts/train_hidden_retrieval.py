@@ -9,12 +9,13 @@ from pathlib import Path
 from typing import Dict
 
 import numpy as np
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 # SRC = ROOT / "src"  # Removed path hack
 
 from artextract.config import load_config
-from artextract.reconstruction import (
+from artextract.core.reconstruction import (
     SyntheticHiddenRetrievalDataset,
     ReconstructionUNet as UNetRetrieval,
     mae,
@@ -131,7 +132,7 @@ def _run_epoch(
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Train synthetic hidden-image retrieval model")
-    p.add_argument("--config", default="configs/retrieval_baseline.json")
+    p.add_argument("--config", default="configs/retrieval_baseline.yaml")
     p.add_argument("--epochs", type=int, default=None)
     p.add_argument("--batch-size", type=int, default=None)
     p.add_argument("--lr", type=float, default=None)
@@ -243,8 +244,8 @@ def main() -> int:
             best_psnr = val_m["psnr"]
             torch.save(model.state_dict(), out_dir / "best_model.pt")
 
-    with (out_dir / "training_history.json").open("w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2)
+    with (out_dir / "training_history.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(history, f, sort_keys=False)
 
     # preview from validation
     with torch.no_grad():
@@ -265,18 +266,18 @@ def main() -> int:
         "image_size": image_size,
         "max_images": max_images,
     }
-    with (out_dir / "run_meta.json").open("w", encoding="utf-8") as f:
-        json.dump(run_meta, f, indent=2)
+    with (out_dir / "run_meta.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(run_meta, f, sort_keys=False)
 
     final_metrics = {
         "best_val_psnr": best_psnr,
         "last_epoch": history[-1] if history else {},
     }
-    with (out_dir / "metrics.json").open("w", encoding="utf-8") as f:
-        json.dump(final_metrics, f, indent=2)
+    with (out_dir / "metrics.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(final_metrics, f, sort_keys=False)
 
     print(f"done: best_val_psnr={best_psnr:.3f}")
-    print(f"artifacts: {out_dir / 'best_model.pt'} {out_dir / 'metrics.json'} {out_dir / 'val_preview.png'}")
+    print(f"artifacts: {out_dir / 'best_model.pt'} {out_dir / 'metrics.yaml'} {out_dir / 'val_preview.png'}")
     return 0
 
 

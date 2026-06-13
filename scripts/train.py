@@ -7,14 +7,16 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from artextract.config import load_config
-from artextract.data import generate_synthetic_multispectral_dataset
-from artextract.training import train_multispectral
+from artextract.core.data import generate_synthetic_multispectral_dataset
+from artextract.services.training import train_multispectral
 
 
 def _parse_csv_arg(v: str) -> list[str]:
@@ -26,7 +28,7 @@ def main() -> int:
     p.add_argument("--manifest", default="", help="CSV/JSONL multispectral manifest")
     p.add_argument("--channels", default="rgb,ir,uv,xray")
     p.add_argument("--tasks", default="properties,hidden")
-    p.add_argument("--config", default="configs/multispectral_baseline.json")
+    p.add_argument("--config", default="configs/multispectral_baseline.yaml")
     p.add_argument("--out-dir", default="")
     p.add_argument("--device", default=None)
     p.add_argument("--synthetic-images-root", default="")

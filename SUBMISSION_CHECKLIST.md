@@ -11,8 +11,8 @@
 4. PDF export of notebook with outputs
 
 ## Recommended Technical Attachments
-1. `reports/<run_id>/metrics.json`
-2. `reports/<run_id>/run_meta.json`
+1. `reports/<run_id>/metrics.yaml`
+2. `reports/<run_id>/run_meta.yaml`
 3. `reports/<run_id>/confusion_matrix.png` (if hidden detection run)
 4. `reports/<run_id>/roc_curve.png` (if hidden detection run)
 5. `reports/<run_id>/recon_examples/*` (if reconstruction run)

@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from artextract.training.metrics import classification_metrics
+from artextract.services.training.metrics import classification_metrics
 
 
 def _load(path: str):
